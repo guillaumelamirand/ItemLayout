@@ -285,10 +285,9 @@ public abstract class AbstractItemLayout extends AbstractLayout implements Conta
   {
     if (pOldVisibleComponents != null)
     {
-      final Set<Component> visibleComponents = new HashSet<Component>();
       for (final Component c : pOldVisibleComponents)
       {
-        if (!visibleComponents.contains(c))
+        if (!components.contains(c))
         {
           super.removeComponent(c);
         }
