@@ -1,0 +1,76 @@
+@mixin itemlayout ($primary-stylename: v-itemlayout) {
+	.#{$primary-stylename}-slot {
+		padding: 2px 5px;
+		text-align: center;
+		border: 1px solid transparent;
+	}
+	
+	.#{$primary-stylename}-slot:focus {
+		outline: none;
+		border: 1px dotted gray;
+	}
+	
+	.#{$primary-stylename}-slot-selected,.#{$primary-stylename}-slot-selected:focus {
+		border: 1px solid blue;
+	}
+	
+	.#{$primary-stylename}-scroll,.#{$primary-stylename}-scroll:focus {
+		outline: none;
+		border: none;
+	}
+	
+	.#{$primary-stylename}-scroll-visiblelist {
+		overflow: hidden !important;
+	}
+	
+	.#{$primary-stylename}-scroll-visiblelist>table>tbody>tr>td {
+		vertical-align: middle !important;
+		text-align: center !important;
+	}
+	
+	.#{$primary-stylename}-slot-removed {
+		display: none !important;
+	}
+	
+	.#{$primary-stylename}-scroll-hidden {
+		visibility: hidden !important;
+	}
+	
+	.#{$primary-stylename}-scroll-prev,.#{$primary-stylename}-scroll-next {
+		text-align: center;
+	}
+	
+	.#{$primary-stylename}-scroll-prev img,.#{$primary-stylename}-scroll-next img {
+		vertical-align: middle;
+	}
+	
+	/* Style for Horizontal */
+	.#{$primary-stylename}-horizontal .#{$primary-stylename}-scroll-visiblelist>table {
+		height: 100%;
+	}
+	
+	.#{$primary-stylename}-horizontal .#{$primary-stylename}-scroll-prev {
+		float: left;
+	}
+	
+	.#{$primary-stylename}-horizontal .#{$primary-stylename}-scroll-next {
+		float: right;
+	}
+	
+	/* Style for Vertical */
+	.#{$primary-stylename}-vertical {
+		position: relative;
+	}
+	
+	.#{$primary-stylename}-vertical .#{$primary-stylename}-scroll-visiblelist {
+		position: absolute;
+	}
+	
+	.#{$primary-stylename}-vertical .#{$primary-stylename}-scroll-visiblelist table {
+		width: 100%;
+	}
+	.#{$primary-stylename}-vertical .#{$primary-stylename}-scroll-next {
+		position: absolute;
+		bottom: 0;
+	}
+}

@@ -21,7 +21,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * @author Guillaume Lamirand
  */
-public abstract class ItemListWidget extends ComplexPanel
+public class ItemListWidget extends ComplexPanel
 {
 
   /**
@@ -155,6 +155,14 @@ public abstract class ItemListWidget extends ComplexPanel
         }
       }
     });
+  }
+
+  /**
+   * Update the width or height of the widget
+   */
+  public void updateSize()
+  {
+    // Nothing to do by default
   }
 
   /**

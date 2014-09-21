@@ -1,0 +1,7 @@
+@import "../valo/styles.scss";
+@import "addons.scss";
+
+.itemlayoutdemo {
+	@include valo;
+	@include addons;
+}

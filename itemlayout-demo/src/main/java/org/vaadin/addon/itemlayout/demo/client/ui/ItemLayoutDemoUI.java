@@ -26,6 +26,7 @@ import org.vaadin.addon.itemlayout.horizontal.ItemHorizontal;
 import org.vaadin.addon.itemlayout.layout.AbstractItemLayout;
 import org.vaadin.addon.itemlayout.vertical.ItemVertical;
 
+import com.vaadin.annotations.Theme;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.IndexedContainer;
@@ -46,6 +47,7 @@ import com.vaadin.ui.VerticalLayout;
  * 
  * @author Guillaume Lamirand
  */
+@Theme("itemlayoutdemo")
 public class ItemLayoutDemoUI extends UI
 {
 
@@ -146,7 +148,6 @@ public class ItemLayoutDemoUI extends UI
 
     final ItemVertical itemVertical = buildDefaultItemVertical();
     itemVertical.addItemClickListener(buildClickListener());
-    itemVertical.setHeight(100, Unit.PERCENTAGE);
 
     final OptionGroup sample = buildSelectableOption();
     sample.addValueChangeListener(buildValueChangeListener(itemVertical));
@@ -188,7 +189,6 @@ public class ItemLayoutDemoUI extends UI
   private ItemHorizontal buildDefaultItemHorizontal()
   {
     final ItemHorizontal item = new ItemHorizontal();
-    item.setWidth(100, Unit.PERCENTAGE);
     item.setContainerDataSource(container);
     return item;
   }
@@ -196,7 +196,6 @@ public class ItemLayoutDemoUI extends UI
   private ItemVertical buildDefaultItemVertical()
   {
     final ItemVertical item = new ItemVertical();
-    item.setHeight(100, Unit.PERCENTAGE);
     item.setContainerDataSource(container);
     return item;
   }

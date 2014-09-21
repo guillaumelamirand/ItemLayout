@@ -1,0 +1,7 @@
+@import "addons.scss";
+@import "itemlayout.scss";
+
+.itemlayout {
+	@include addons;
+	@include itemlayout;
+}

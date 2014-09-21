@@ -4,7 +4,6 @@ import org.vaadin.addon.itemlayout.layout.AbstractItemLayout;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
@@ -51,8 +50,6 @@ public final class DefaultItemGenerator implements ItemGenerator
     {
       defaultLabel.setDescription((String) descriptionProperty.getValue());
     }
-    layout.setWidth(35, Unit.PIXELS);
-    layout.setHeight(35, Unit.PIXELS);
     layout.addComponent(defaultLabel);
     layout.setComponentAlignment(defaultLabel, Alignment.MIDDLE_CENTER);
     return layout;

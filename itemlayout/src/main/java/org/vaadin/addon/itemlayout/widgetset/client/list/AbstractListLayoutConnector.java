@@ -21,6 +21,7 @@ package org.vaadin.addon.itemlayout.widgetset.client.list;
 
 import org.vaadin.addon.itemlayout.widgetset.client.layout.AbstractItemLayoutConnector;
 import org.vaadin.addon.itemlayout.widgetset.client.layout.ItemLayoutConstant;
+import org.vaadin.addon.itemlayout.widgetset.client.model.ItemSlot;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -30,6 +31,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.ui.layout.ElementResizeEvent;
 import com.vaadin.client.ui.layout.ElementResizeListener;
@@ -59,6 +61,7 @@ public abstract class AbstractListLayoutConnector extends AbstractItemLayoutConn
                                                          public void onElementResize(
                                                              final ElementResizeEvent e)
                                                          {
+                                                           getWidget().updateSize();
                                                            updateClippedElement();
                                                            updateScrollButtonsVisibility();
                                                          }
@@ -72,27 +75,34 @@ public abstract class AbstractListLayoutConnector extends AbstractItemLayoutConn
   protected void init()
   {
     super.init();
+    getLayoutManager().addElementResizeListener(getWidget().getElement(), resizeListener);
     showPreviousButton(false);
     showNextButton(false);
-
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public ItemListState getState()
+  public void onUnregister()
   {
-    return (ItemListState) super.getState();
+    super.onUnregister();
+    getLayoutManager().removeElementResizeListener(getWidget().getElement(), resizeListener);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public ItemListWidget getWidget()
+  protected void initLayout()
   {
-    return (ItemListWidget) super.getWidget();
+    getWidget().removeAll();
+  }
+
+  @Override
+  protected void addItemSlot(final ComponentConnector pConnector, final ItemSlot pSlot)
+  {
+    getWidget().add(pSlot);
   }
 
   /**
@@ -102,6 +112,7 @@ public abstract class AbstractListLayoutConnector extends AbstractItemLayoutConn
   public void onStateChanged(final StateChangeEvent pStateChangeEvent)
   {
     super.onStateChanged(pStateChangeEvent);
+    getWidget().updateSize();
     final boolean hasScrollIndexChanged = pStateChangeEvent.hasPropertyChanged(ItemListState.SCROLLER_INDEX);
     if (hasScrollIndexChanged)
     {
@@ -118,8 +129,6 @@ public abstract class AbstractListLayoutConnector extends AbstractItemLayoutConn
   {
     addMouseWheelListener();
     updateScrollButtonsVisibility();
-    getLayoutManager().removeElementResizeListener(getWidget().getElement(), resizeListener);
-    getLayoutManager().addElementResizeListener(getWidget().getElement(), resizeListener);
   }
 
   /**
@@ -461,21 +470,6 @@ public abstract class AbstractListLayoutConnector extends AbstractItemLayoutConn
   }
 
   /**
-   * Get the element at index
-   * 
-   * @param {@link int} pIndex, the index of element to get
-   * @return {@link Widget} the widget at index pIndex if exist, null otherwise
-   */
-  protected abstract Widget getWidget(final int pIndex);
-
-  /**
-   * Get the elements count
-   * 
-   * @return {@link int} the number of element
-   */
-  protected abstract int getWidgetCount();
-
-  /**
    * Determines if there are clipped elements or not
    * 
    * @return {@link boolean} true if there is clipped elements, false otherwise
@@ -494,20 +488,84 @@ public abstract class AbstractListLayoutConnector extends AbstractItemLayoutConn
    * 
    * @return {@link FocusPanel} the scroll next layout
    */
-  protected abstract FocusPanel getNextLayout();
+  protected FocusPanel getNextLayout()
+  {
+    return getWidget().getNextLayout();
+  }
 
   /**
    * Get the scroll previous layout
    * 
    * @return {@link FocusPanel} the scroll previous layout
    */
-  protected abstract FocusPanel getPrevLayout();
+  protected FocusPanel getPrevLayout()
+  {
+    return getWidget().getPrevLayout();
+  }
+
+  /**
+   * Get the elements list layout
+   * 
+   * @return {@link Widget} the elements list layout
+   */
+  protected Widget getElemsListLayout()
+  {
+    return getWidget().getElemsListLayout();
+  }
 
   /**
    * Get the visible elements list layout
    * 
    * @return {@link Panel} the visible elements list layout
    */
-  protected abstract FocusPanel getElemVisibleListLayout();
+  protected FocusPanel getElemVisibleListLayout()
+  {
+    return getWidget().getElemVisibleListLayout();
+  }
 
+  /**
+   * Get the element at index
+   * 
+   * @param {@link int} pIndex, the index of element to get
+   * @return {@link Widget} the widget at index pIndex if exist, null otherwise
+   */
+  protected Widget getWidget(final int pIndex)
+  {
+    if ((pIndex < 0) || (pIndex >= getWidgetCount()) || (getWidgetCount() < 1))
+    {
+      return null;
+    }
+    else
+    {
+      return getWidget().getElemsListLayout().getWidget(pIndex);
+    }
+  }
+
+  /**
+   * Get the elements count
+   * 
+   * @return {@link int} the number of element
+   */
+  protected int getWidgetCount()
+  {
+    return getWidget().getElemsListLayout().getWidgetCount();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public ItemListWidget getWidget()
+  {
+    return (ItemListWidget) super.getWidget();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public ItemListState getState()
+  {
+    return (ItemListState) super.getState();
+  }
 }

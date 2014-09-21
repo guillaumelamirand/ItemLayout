@@ -37,6 +37,7 @@
 						</Require-Bundle>
 						<Import-Package>
 							!com.google.gwt.*,
+							VAADIN.themes.itemlayout;version=${project.version},
 							*
 						</Import-Package>
 						<Export-Package>!.*</Export-Package>
@@ -118,7 +119,9 @@
 			<build>
 				<plugins>
 					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.7</version>
 						<executions>
 							<execution>
 								<id>delete-widgetsets-dir</id>
@@ -138,22 +141,26 @@
 					<plugin>
 						<groupId>com.vaadin</groupId>
 						<artifactId>vaadin-maven-plugin</artifactId>
-						<configuration>
-							<webappDirectory>${basedir}/src/main/webapp/VAADIN/widgetsets/</webappDirectory>
-							<extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
-							<!-- Remove draftCompile when project is ready -->
-							<draftCompile>${draftCompile}</draftCompile>
-							<strict>true</strict>
-							<compileReport>false</compileReport>
-						</configuration>
 						<executions>
 							<execution>
+								<id>widgetset</id>
 								<phase>generate-resources</phase>
 								<goals>
+									<goal>clean</goal>
 									<goal>resources</goal>
+									<goal>update-theme</goal>
+									<goal>compile-theme</goal>
 									<goal>update-widgetset</goal>
 									<goal>compile</goal>
 								</goals>
+								<configuration>
+										<webappDirectory>${basedir}/src/main/webapp/VAADIN/widgetsets/</webappDirectory>
+										<extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
+							<!-- Remove draftCompile when project is ready -->
+										<draftCompile>${draftCompile}</draftCompile>
+										<strict>true</strict>
+										<compileReport>false</compileReport>
+									</configuration>
 							</execution>
 						</executions>
 					</plugin>
@@ -168,7 +175,10 @@
 									<directory>WebContent</directory>
 								</fileset>
 								<fileset>
-									<directory>src/main/webapp/VAADIN</directory>
+									<directory>src/main/webapp/VAADIN/widgetsets</directory>
+								</fileset>
+								<fileset>
+									<directory>src/main/webapp/VAADIN/gwt-unitCache</directory>
 								</fileset>
 								<fileset>
 									<directory>src/main/webapp/WEB-INF/deploy</directory>
