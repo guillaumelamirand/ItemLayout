@@ -108,6 +108,22 @@ public abstract class AbstractListLayoutConnector extends AbstractItemLayoutConn
       hideDefaultScrolledElems();
       updateClippedElement();
     }
+    final boolean hasResourcesChanged = pStateChangeEvent.hasPropertyChanged("resources");
+    if (hasResourcesChanged)
+    {
+      getWidget().setPrevIconUrl(getPrevIconUrl());
+      getWidget().setNextIconUrl(getNextIconUrl());
+    }
+  }
+
+  protected String getNextIconUrl()
+  {
+    return getResourceUrl(ItemListState.NEXT_ICON_KEY);
+  }
+
+  protected String getPrevIconUrl()
+  {
+    return getResourceUrl(ItemListState.PREV_ICON_KEY);
   }
 
   /**

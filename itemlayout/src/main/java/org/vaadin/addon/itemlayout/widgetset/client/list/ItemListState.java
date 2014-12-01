@@ -43,5 +43,7 @@ public class ItemListState extends ItemLayoutState
    */
   public int                scrollerIndex    = 0;
   public static String      SCROLLER_INDEX   = "scrollerIndex";
+  public static String      PREV_ICON_KEY    = "itemPrevIcon";
+  public static String      NEXT_ICON_KEY    = "itemNextIcon";
 
 }
