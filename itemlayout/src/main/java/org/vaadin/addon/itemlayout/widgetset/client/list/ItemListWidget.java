@@ -27,11 +27,11 @@ public class ItemListWidget extends ComplexPanel
   /**
    * The scroll previous button image
    */
-  private final Image        scrollPrevButtonElement;
+  private final Image        scrollPrevIcon;
   /**
    * The scroll next button image
    */
-  private final Image        scrollNextButtonElement;
+  private final Image        scrollNextIcon;
   /**
    * The scroll previous panel layout
    */
@@ -55,6 +55,9 @@ public class ItemListWidget extends ComplexPanel
 
   /**
    * Default constructor
+   * 
+   * @param pVertical
+   *          defined orientation of the layout
    */
   public ItemListWidget(final boolean pVertical)
   {
@@ -80,8 +83,8 @@ public class ItemListWidget extends ComplexPanel
     {
       imageResourcePrev = ResourceBundle.INSTANCE.verticalPrev();
     }
-    scrollPrevButtonElement = new Image(imageResourcePrev);
-    prevLayout.add(scrollPrevButtonElement);
+    scrollPrevIcon = new Image(imageResourcePrev);
+    prevLayout.add(scrollPrevIcon);
     // Scroll Next widget
     nextLayout = new FocusPanel();
     nextLayout.setStyleName(ItemLayoutConstant.CLASS_SCROLL_LAYOUT);
@@ -91,8 +94,8 @@ public class ItemListWidget extends ComplexPanel
     {
       imageResourceNext = ResourceBundle.INSTANCE.verticalNext();
     }
-    scrollNextButtonElement = new Image(imageResourceNext);
-    nextLayout.add(scrollNextButtonElement);
+    scrollNextIcon = new Image(imageResourceNext);
+    nextLayout.add(scrollNextIcon);
     // Elements list layout
     elemVisibleListLayout = new FocusPanel();
     elemVisibleListLayout.setStyleName(ItemLayoutConstant.CLASS_LIST_VISIBLE);
@@ -191,6 +194,35 @@ public class ItemListWidget extends ComplexPanel
     if (elemsListLayout != null)
     {
       elemsListLayout.clear();
+    }
+  }
+
+  /**
+   * Sets the icon url used to previous action
+   * 
+   * @param pUrl
+   *          the icon url
+   */
+  public void setPrevIconUrl(final String pUrl)
+  {
+    if ("".equals(pUrl) == false)
+    {
+      scrollPrevIcon.setUrl(pUrl);
+    }
+  }
+
+  /**
+   * Sets the icon url used to next action
+   * 
+   * @param pUrl
+   *          the icon url
+   * @return the icon used to next action
+   */
+  public void setNextIconUrl(final String pUrl)
+  {
+    if ("".equals(pUrl) == false)
+    {
+      scrollNextIcon.setUrl(pUrl);
     }
   }
 

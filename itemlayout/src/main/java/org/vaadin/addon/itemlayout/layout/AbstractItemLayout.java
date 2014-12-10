@@ -145,8 +145,27 @@ public abstract class AbstractItemLayout extends AbstractLayout implements Conta
   @Override
   public void valueChange(final Property.ValueChangeEvent event)
   {
-    updateItemComponents();
-    markAsDirty();
+    // Hack to retrieve current property id which has changed
+    Object itemIdChange = null;
+    Object propertyIdChange = null;
+    for (final Object itemId : getItemIds())
+    {
+      for (final Object propId : getContainerPropertyIds())
+      {
+        final Property<?> p = getContainerProperty(itemId, propId);
+        final Property<?> o = event.getProperty();
+        if (p.equals(o))
+        {
+          itemIdChange = itemId;
+          propertyIdChange = propId;
+          break;
+        }
+      }
+    }
+    if ((itemIdChange != null) && (propertyIdChange != null))
+    {
+      updateItemComponent(itemIdChange, propertyIdChange);
+    }
   }
 
   /**
@@ -209,7 +228,23 @@ public abstract class AbstractItemLayout extends AbstractLayout implements Conta
     // Notify all listeners
     fireItemSetChange();
 
-    updateItemComponents();
+    // The following allows for an IndexedContainer to draw only new item element
+    boolean generateAll = true;
+    if (event instanceof IndexedContainer.ItemSetChangeEvent)
+    {
+      final IndexedContainer.ItemSetChangeEvent iEvent = (IndexedContainer.ItemSetChangeEvent) event;
+      final int addedItemIndex = iEvent.getAddedItemIndex();
+      if (addedItemIndex != -1)
+      {
+        generateAll = false;
+        final IndexedContainer iContentainer = (IndexedContainer) event.getContainer();
+        updateItemComponent(iContentainer.getIdByIndex(addedItemIndex), null);
+      }
+    }
+    if (generateAll)
+    {
+      updateItemComponents();
+    }
   }
 
   /**
@@ -221,6 +256,55 @@ public abstract class AbstractItemLayout extends AbstractLayout implements Conta
     firePropertySetChange();
     updateItemComponents();
 
+  }
+
+  protected void updateItemComponent(final Object pItemId, final Object pPropertyIdChanged)
+  {
+    if (!isAttached())
+    {
+      return;
+    }
+
+    final boolean canBeGenerated = generator.canBeGenerated(this, pItemId, pPropertyIdChanged);
+    if (canBeGenerated)
+    {
+
+      // Keep old reference
+      final Property<?> oldProp = getContainerProperty(pItemId, pPropertyIdChanged);
+      Component oldComponent = null;
+      final Set<Entry<Connector, String>> entrySet = getState().items.entrySet();
+      for (final Entry<Connector, String> item : entrySet)
+      {
+        final Connector key = item.getKey();
+        final String value = item.getValue();
+        if ((item.getValue() != null) && (value.equals(pItemId)))
+        {
+          oldComponent = (Component) key;
+          getState().items.remove(oldComponent);
+          components.remove(oldComponent);
+          break;
+        }
+      }
+
+      // Generate new component for the current item id
+      generateItemComponent(pItemId);
+      listenProperty(pItemId, pPropertyIdChanged);
+
+      // Detach old component
+      if ((oldComponent != null) && (components.contains(oldComponent)))
+      {
+        super.removeComponent(oldComponent);
+      }
+      // Unregister listenner
+      if ((oldProp instanceof Property.ValueChangeNotifier)
+          && (listenedProperties.contains(oldProp) == false))
+      {
+        final Property.ValueChangeNotifier property = (ValueChangeNotifier) oldProp;
+        property.removeValueChangeListener(this);
+      }
+
+      markAsDirty();
+    }
   }
 
   protected void updateItemComponents()
@@ -240,6 +324,10 @@ public abstract class AbstractItemLayout extends AbstractLayout implements Conta
     for (final Object itemId : getItemIds())
     {
       generateItemComponent(itemId);
+      for (final Object propId : getContainerPropertyIds())
+      {
+        listenProperty(itemId, propId);
+      }
     }
 
     // Detach existing component
@@ -251,22 +339,21 @@ public abstract class AbstractItemLayout extends AbstractLayout implements Conta
   protected void generateItemComponent(final Object pItemId)
   {
     final Component c = generator.generateItem(this, pItemId);
-    addComponent(c);
-    components.add(c);
-    getState().items.put(c, pItemId.toString());
-    listenProperties(pItemId);
+    if (c != null)
+    {
+      addComponent(c);
+      components.add(c);
+      getState().items.put(c, pItemId.toString());
+    }
   }
 
-  private void listenProperties(final Object pItemId)
+  private void listenProperty(final Object pItemId, final Object pPropertyId)
   {
-    for (final Object propId : getContainerPropertyIds())
+    final Property<?> prop = getContainerProperty(pItemId, pPropertyId);
+    if ((prop instanceof Property.ValueChangeNotifier) && !listenedProperties.contains(prop))
     {
-      final Property<?> prop = getContainerProperty(pItemId, propId);
-      if ((prop instanceof Property.ValueChangeNotifier) && !listenedProperties.contains(prop))
-      {
-        ((Property.ValueChangeNotifier) prop).addValueChangeListener(this);
-        listenedProperties.add(prop);
-      }
+      ((Property.ValueChangeNotifier) prop).addValueChangeListener(this);
+      listenedProperties.add(prop);
     }
   }
 
@@ -287,7 +374,7 @@ public abstract class AbstractItemLayout extends AbstractLayout implements Conta
     {
       for (final Component c : pOldVisibleComponents)
       {
-        if (!components.contains(c))
+        if (components.contains(c) == false)
         {
           super.removeComponent(c);
         }

@@ -22,6 +22,8 @@ package org.vaadin.addon.itemlayout.list;
 import org.vaadin.addon.itemlayout.layout.AbstractItemLayout;
 import org.vaadin.addon.itemlayout.widgetset.client.list.ItemListState;
 
+import com.vaadin.server.Resource;
+
 /**
  * @author Jeremy Casery
  */
@@ -98,6 +100,28 @@ public abstract class AbstractListLayout extends AbstractItemLayout
       getState().scrollerIndex = pScrollerIndex;
       markAsDirty();
     }
+  }
+
+  /**
+   * Set custom icon to previous button
+   * 
+   * @param pPrevIcon
+   *          The resource used for previous button
+   */
+  public void setPrevIcon(final Resource pPrevIcon)
+  {
+    setResource(ItemListState.PREV_ICON_KEY, pPrevIcon);
+  }
+
+  /**
+   * Set custom icon to next button
+   * 
+   * @param pNextIcon
+   *          The resource used for next button
+   */
+  public void setNextIcon(final Resource pNextIcon)
+  {
+    setResource(ItemListState.NEXT_ICON_KEY, pNextIcon);
   }
 
 }
