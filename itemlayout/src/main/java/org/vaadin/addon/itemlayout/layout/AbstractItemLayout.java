@@ -885,6 +885,10 @@ public abstract class AbstractItemLayout extends AbstractLayout implements Conta
         {
           ((Container.PropertySetChangeNotifier) items).removePropertySetChangeListener(this);
         }
+        if (items instanceof Property.ValueChangeNotifier)
+        {
+          ((Property.ValueChangeNotifier) items).removeValueChangeListener(this);
+        }
       }
 
       // Assigns new data source
@@ -900,6 +904,10 @@ public abstract class AbstractItemLayout extends AbstractLayout implements Conta
         if (items instanceof Container.PropertySetChangeNotifier)
         {
           ((Container.PropertySetChangeNotifier) items).addPropertySetChangeListener(this);
+        }
+        if (items instanceof Property.ValueChangeNotifier)
+        {
+          ((Property.ValueChangeNotifier) items).addValueChangeListener(this);
         }
       }
 
