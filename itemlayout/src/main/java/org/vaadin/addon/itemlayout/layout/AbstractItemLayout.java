@@ -277,7 +277,7 @@ public abstract class AbstractItemLayout extends AbstractLayout implements Conta
       {
         final Connector key = item.getKey();
         final String value = item.getValue();
-        if ((item.getValue() != null) && (value.equals(pItemId)))
+        if ((item.getValue() != null) && (pItemId != null) && (value.equals(pItemId.toString())))
         {
           oldComponent = (Component) key;
           getState().items.remove(oldComponent);
